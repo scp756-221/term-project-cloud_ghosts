@@ -88,8 +88,8 @@ def user_url(request, user_address, user_port):
 
 
 @pytest.fixture
-def music_url(request, music_address, music_port):
-    return "http://{}:{}/api/v1/music/".format(
+def book_url(request, music_address, music_port):
+    return "http://{}:{}/api/v1/book/".format(
         music_address, music_port)
 
 
@@ -159,7 +159,7 @@ def setup(args):
         args.dynamodb_region,
         args.access_key_id,
         args.secret_access_key,
-        'Music-' + args.table_suffix,
+        'Book-' + args.table_suffix,
         'User-' + args.table_suffix
     )
 

@@ -12,12 +12,12 @@ defined in `conftest.py`.
 import pytest
 
 # Local modules
-import music
+import book
 
 
 @pytest.fixture
-def mserv(request, music_url, auth):
-    return music.Music(music_url, auth)
+def mserv(request, book_url, auth):
+    return book.Book(book_url, auth)
 
 
 @pytest.fixture
@@ -53,15 +53,6 @@ def m_id_oa(request, mserv, song_oa):
     mserv.delete(m_id)
 
 
-def test_orig_artist_oa(mserv, m_id_oa):
-    # Original recording, 1965
-    orig_artist = 'Otis Redding'
-    trc = mserv.write_orig_artist(m_id_oa, orig_artist)
-    assert trc == 200
-    trc, oa = mserv.read_orig_artist(m_id_oa)
-    assert trc == 200 and oa == orig_artist
-
-
 def test_full_cycle(mserv):
     # `mserv` is an instance of the `Music` class
 
@@ -69,8 +60,6 @@ def test_full_cycle(mserv):
     song = ('k. d. lang', 'Hallelujah')
     # Soundtrack of first Shrek film (2001)
     orig_artist = 'Rufus Wainwright'
-    # Original recording from album "Various Positions" (1984)
-    orig_orig_artist = 'Leonard Cohen'
 
     # Create a music record and save its id in the variable `m_id`
     # ... Fill in the test ...
@@ -83,18 +72,6 @@ def test_full_cycle(mserv):
     trc, artist, title, oa = mserv.read(m_id)
     assert (trc == 200 and artist == song[0] and title == song[1]
             and oa == orig_artist)
-
-    # function by me to get record and test that the value is there
-    trc, oa = mserv.read_orig_artist(m_id)
-    assert trc == 200 and oa == orig_artist
-
-    # function by me to update the record
-    trc = mserv.write_orig_artist(m_id, orig_orig_artist)
-    assert trc == 200
-
-    # functio by me to get record and check updated value again
-    trc, oa = mserv.read_orig_artist(m_id)
-    assert trc == 200 and oa == orig_orig_artist
 
     # The last statement of the test
     mserv.delete(m_id)

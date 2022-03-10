@@ -1,6 +1,6 @@
 """
 SFU CMPT 756
-Sample application---music service.
+Sample application---book service.
 """
 
 # Standard library modules
@@ -26,7 +26,7 @@ import simplejson as json
 app = Flask(__name__)
 
 metrics = PrometheusMetrics(app)
-metrics.info('app_info', 'Music process')
+metrics.info('app_info', 'Book process')
 
 db = {
     "name": "http://cmpt756db:30002/api/v1/datastore",
@@ -64,15 +64,15 @@ def list_all():
     return {}
 
 
-@bp.route('/<music_id>', methods=['GET'])
-def get_song(music_id):
+@bp.route('/<book_id>', methods=['GET'])
+def get_song(book_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
         return Response(json.dumps({"error": "missing auth"}),
                         status=401,
                         mimetype='application/json')
-    payload = {"objtype": "music", "objkey": music_id}
+    payload = {"objtype": "book", "objkey": book_id}
     url = db['name'] + '/' + db['endpoint'][0]
     response = requests.get(
         url,
@@ -82,7 +82,7 @@ def get_song(music_id):
 
 
 @bp.route('/', methods=['POST'])
-def create_song():
+def create_book():
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -91,15 +91,15 @@ def create_song():
                         mimetype='application/json')
     try:
         content = request.get_json()
-        Artist = content['Artist']
-        SongTitle = content['SongTitle']
-        OrigArtist = content['OrigArtist'] if 'OrigArtist' in content else None
+        Author = content['Author']
+        BookTitle = content['BookTitle']
+        Genre = content['Genre'] if 'Genre' in content else None
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][1]
-    payload = {"objtype": "music", "Artist": Artist, "SongTitle": SongTitle}
-    if OrigArtist is not None:
-        payload["OrigArtist"] = OrigArtist
+    payload = {"objtype": "book", "Author": Author, "BookTitle": BookTitle}
+    if Genre is not None:
+        payload["Genre"] = Genre
     response = requests.post(
         url,
         json=payload,
@@ -107,8 +107,8 @@ def create_song():
     return (response.json())
 
 
-@bp.route('/<music_id>', methods=['DELETE'])
-def delete_song(music_id):
+@bp.route('/<book_id>', methods=['DELETE'])
+def delete_book(book_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -118,56 +118,7 @@ def delete_song(music_id):
     url = db['name'] + '/' + db['endpoint'][2]
     response = requests.delete(
         url,
-        params={"objtype": "music", "objkey": music_id},
-        headers={'Authorization': headers['Authorization']})
-    return (response.json())
-
-
-@bp.route('/read_orig_artist/<music_id>', methods=['GET'])
-def read_orig_artist(music_id):
-    headers = request.headers
-    # check header here
-    if 'Authorization' not in headers:
-        return Response(json.dumps({"error": "missing auth"}),
-                        status=401,
-                        mimetype='application/json')
-    payload = {"objtype": "music", "objkey": music_id}
-    url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(
-        url,
-        params=payload,
-        headers={'Authorization': headers['Authorization']})
-    if response.status_code != 200:
-        response = {
-            "Count": 0,
-            "Items": []
-        }
-        return app.make_response((response, 404))
-    item = response.json()['Items'][0]
-    oa = (item['OrigArtist'] if 'OrigArtist' in item
-          else None)
-    return {'OrigArtist': oa}
-
-
-@bp.route('/write_orig_artist/<music_id>', methods=['PUT'])
-def write_orig_artist(music_id):
-    headers = request.headers
-    # check header here
-    if 'Authorization' not in headers:
-        return Response(json.dumps({"error": "missing auth"}),
-                        status=401,
-                        mimetype='application/json')
-    try:
-        content = request.get_json()
-        orig_artist = content['OrigArtist']
-    except Exception:
-        return json.dumps({"message": "error reading arguments"})
-    payload = {"objtype": "music", "objkey": music_id}
-    url = db['name'] + '/' + db['endpoint'][3]
-    response = requests.put(
-        url,
-        params=payload,
-        json={"OrigArtist": orig_artist},
+        params={"objtype": "book", "objkey": book_id},
         headers={'Authorization': headers['Authorization']})
     return (response.json())
 
@@ -175,7 +126,7 @@ def write_orig_artist(music_id):
 # All database calls will have this prefix.  Prometheus metric
 # calls will not---they will have route '/metrics'.  This is
 # the conventional organization.
-app.register_blueprint(bp, url_prefix='/api/v1/music/')
+app.register_blueprint(bp, url_prefix='/api/v1/book/')
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

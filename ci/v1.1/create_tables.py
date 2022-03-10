@@ -1,5 +1,5 @@
 """
-Create the Music and User tables
+Create the Book and User tables
 
 This is intended to be used within a continuous integration test.
 As such, it presumes that it is creating the tables in a local
@@ -18,8 +18,8 @@ import boto3
 
 
 # Function definitions
-def create_tables(url, region, access_key_id, secret_access_key, music, user):
-    """ Create the music and user tables in DynamoDB.
+def create_tables(url, region, access_key_id, secret_access_key, book, user):
+    """ Create the book and user tables in DynamoDB.
 
     Parameters
     ----------
@@ -57,10 +57,10 @@ def create_tables(url, region, access_key_id, secret_access_key, music, user):
     These create_table() calls are asynchronous and so will run in parallel.
     """
     mt = dynamodb.create_table(
-        TableName=music,
+        TableName=book,
         AttributeDefinitions=[{
-            "AttributeName": "music_id", "AttributeType": "S"}],
-        KeySchema=[{"AttributeName": "music_id", "KeyType": "HASH"}],
+            "AttributeName": "book_id", "AttributeType": "S"}],
+        KeySchema=[{"AttributeName": "book_id", "KeyType": "HASH"}],
         ProvisionedThroughput={
             "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     )

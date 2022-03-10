@@ -1,5 +1,5 @@
 """
-Python  API for the music service.
+Python  API for the book service.
 """
 
 # Standard library modules
@@ -8,8 +8,8 @@ Python  API for the music service.
 import requests
 
 
-class Music():
-    """Python API for the music service.
+class Book():
+    """Python API for the book service.
 
     Handles the details of formatting HTTP requests and decoding
     the results.
@@ -17,10 +17,10 @@ class Music():
     Parameters
     ----------
     url: string
-        The URL for accessing the music service. Often
+        The URL for accessing the book service. Often
         'http://cmpt756s2:30001/'. Note the trailing slash.
     auth: string
-        Authorization code to pass to the music service. For many
+        Authorization code to pass to the book service. For many
         implementations, the code is required but its content is
         ignored.
     """
@@ -28,17 +28,17 @@ class Music():
         self._url = url
         self._auth = auth
 
-    def create(self, artist, song, orig_artist=None):
-        """Create an artist, song pair.
+    def create(self, author, title, genre=None):
+        """Create an author, book pair.
 
         Parameters
         ----------
-        artist: string
-            The artist performing song.
-        song: string
-            The name of the song.
-        orig_artist: string or None
-            The name of the original performer of this song.
+        author: string
+            The author of the book.
+        title: string
+            The name of the book.
+        genre: string or None
+            The genre of the book.
 
         Returns
         -------
@@ -46,66 +46,66 @@ class Music():
             The number is the HTTP status code returned by Music.
             The string is the UUID of this song in the music database.
         """
-        payload = {'Artist': artist,
-                   'SongTitle': song}
-        if orig_artist is not None:
-            payload['OrigArtist'] = orig_artist
+        payload = {'Author': author,
+                   'BookTitle': title}
+        if genre is not None:
+            payload['Genre'] = genre
         r = requests.post(
             self._url,
             json=payload,
             headers={'Authorization': self._auth}
         )
-        return r.status_code, r.json()['music_id']
+        return r.status_code, r.json()['book_id']
 
-    def read(self, m_id):
-        """Read an artist, song pair.
+    def read(self, b_id):
+        """Read an author, book pair.
 
         Parameters
         ----------
-        m_id: string
-            The UUID of this song in the music database.
+        b_id: string
+            The UUID of this book in the library database.
 
         Returns
         -------
-        status, artist, title, orig_artist
+        status, author, title, genre
 
         status: number
             The HTTP status code returned by Music.
-        artist: If status is 200, the artist performing the song.
+        author: If status is 200, the artist performing the song.
           If status is not 200, None.
         title: If status is 200, the title of the song.
           If status is not 200, None.
-        orig_artist: If status is 200 and the song has an
+        genre: If status is 200 and the song has an
           original artist field, the artist's name.
           If the status is not 200 or there is no original artist
           field, None.
         """
         r = requests.get(
-            self._url + m_id,
+            self._url + b_id,
             headers={'Authorization': self._auth}
             )
         if r.status_code != 200:
             return r.status_code, None, None, None
 
         item = r.json()['Items'][0]
-        OrigArtist = (item['OrigArtist'] if 'OrigArtist' in item
-                      else None)
-        return r.status_code, item['Artist'], item['SongTitle'], OrigArtist
+        Genre = (item['Genre'] if 'Genre' in item
+                 else None)
+        return r.status_code, item['Author'], item['BookTitle'], Genre
 
-    def delete(self, m_id):
-        """Delete an artist, song pair.
+    def delete(self, b_id):
+        """Delete an author, book pair.
 
         Parameters
         ----------
-        m_id: string
-            The UUID of this song in the music database.
+        b_id: string
+            The UUID of this book in the library database.
 
         Returns
         -------
-        Does not return anything. The music delete operation
+        Does not return anything. The book delete operation
         always returns 200, HTTP success.
         """
         requests.delete(
-            self._url + m_id,
+            self._url + b_id,
             headers={'Authorization': self._auth}
         )
