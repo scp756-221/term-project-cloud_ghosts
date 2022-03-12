@@ -1,5 +1,5 @@
 """
-Create the Book, Reader and BestSeller tables
+Create the Book and reader tables
 
 This is intended to be used within a continuous integration test.
 As such, it presumes that it is creating the tables in a local
@@ -18,8 +18,8 @@ import boto3
 
 
 # Function definitions
-def create_tables(url, region, access_key_id, secret_access_key, book, user):
-    """ Create the book and user tables in DynamoDB.
+def create_tables(url, region, access_key_id, secret_access_key, book, reader):
+    """ Create the book and reader tables in DynamoDB.
 
     Parameters
     ----------
@@ -41,8 +41,8 @@ def create_tables(url, region, access_key_id, secret_access_key, book, user):
         service requires the secret key associated with the key ID.
     music: string
         Name of the music table.
-    user: string
-        Name of the user table.
+    reader: string
+        Name of the reader table.
     """
     dynamodb = boto3.resource(
         'dynamodb',
@@ -64,11 +64,11 @@ def create_tables(url, region, access_key_id, secret_access_key, book, user):
         ProvisionedThroughput={
             "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     )
-    bt = dynamodb.create_table(
-        TableName=BestSeller,
+    ut = dynamodb.create_table(
+        TableName=reader,
         AttributeDefinitions=[{
-            "AttributeName": "book_id", "AttributeType": "S"}],
-        KeySchema=[{"AttributeName": "book_id", "KeyType": "HASH"}],
+            "AttributeName": "reader_id", "AttributeType": "S"}],
+        KeySchema=[{"AttributeName": "reader_id", "KeyType": "HASH"}],
         ProvisionedThroughput={
             "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     )
@@ -77,4 +77,4 @@ def create_tables(url, region, access_key_id, secret_access_key, book, user):
     proceed after both exist.
     """
     mt.wait_until_exists()
-    bt.wait_until_exists()
+    ut.wait_until_exists()
