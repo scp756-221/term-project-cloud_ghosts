@@ -1,5 +1,5 @@
 """
-Create the Book and User tables
+Create the Book, Reader and BestSeller tables
 
 This is intended to be used within a continuous integration test.
 As such, it presumes that it is creating the tables in a local
@@ -64,11 +64,11 @@ def create_tables(url, region, access_key_id, secret_access_key, book, user):
         ProvisionedThroughput={
             "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     )
-    ut = dynamodb.create_table(
-        TableName=user,
+    bt = dynamodb.create_table(
+        TableName=BestSeller,
         AttributeDefinitions=[{
-            "AttributeName": "user_id", "AttributeType": "S"}],
-        KeySchema=[{"AttributeName": "user_id", "KeyType": "HASH"}],
+            "AttributeName": "book_id", "AttributeType": "S"}],
+        KeySchema=[{"AttributeName": "book_id", "KeyType": "HASH"}],
         ProvisionedThroughput={
             "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     )
@@ -77,4 +77,4 @@ def create_tables(url, region, access_key_id, secret_access_key, book, user):
     proceed after both exist.
     """
     mt.wait_until_exists()
-    ut.wait_until_exists()
+    bt.wait_until_exists()

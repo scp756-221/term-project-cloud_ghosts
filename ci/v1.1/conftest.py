@@ -92,6 +92,11 @@ def book_url(request, music_address, music_port):
     return "http://{}:{}/api/v1/book/".format(
         music_address, music_port)
 
+@pytest.fixture
+def bestseller_url(request, music_address, music_port):
+    return "http://{}:{}/api/v1/bestseller/".format(
+        music_address, music_port)
+
 
 @pytest.fixture
 def auth(request):
@@ -160,7 +165,7 @@ def setup(args):
         args.access_key_id,
         args.secret_access_key,
         'Book-' + args.table_suffix,
-        'User-' + args.table_suffix
+        'BestSeller-' + args.table_suffix
     )
 
 
