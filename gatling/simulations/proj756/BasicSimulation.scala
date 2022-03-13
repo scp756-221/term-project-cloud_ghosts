@@ -95,5 +95,17 @@ class BasicSimulation extends Simulation {
         .formParam("genre", "Poetry")
     )
 
+        .pause(1)
+    .exec(
+      http("request_12") // Here's an example of a GET request
+        .get("/12")
+    )
+
+        .pause(1)
+    .exec(
+      http("request_13") // Here's an example of a DELETE request
+        .delete("/13")
+    )
+
   setUp(scn.inject(atOnceUsers(1)).protocols(httpProtocol))
 }
