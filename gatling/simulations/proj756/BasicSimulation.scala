@@ -85,6 +85,26 @@ class BasicSimulation extends Simulation {
         .formParam("discontinued", "")
         .formParam("company", "37")
     )
+    .pause(1)
+    .exec(
+      http("request_12") // Here's an example of a POST request
+        .post("/reader")
+        .formParam("email", "abc@gmail.com") // Note the triple double quotes: used in Scala for protecting a whole chain of characters (no need for backslash)
+        .formParam("lname", "john")
+        .formParam("fname", "doe")
+        .formParam("libaccountno", "jd123456")
+        .formParam("membershipexp", "2022-12-12")
+    )
+    .pause(1)
+    .exec(
+      http("request_13") // Here's an example of a GET request
+        .get("/reader/12")
+    )
+    .pause(1)
+    .exec(
+      http("request_14") // Here's an example of a DELETE request
+        .delete("/reader/12")
+    )
 
     .pause(1)
     .exec(
