@@ -82,7 +82,11 @@ def update_reader(reader_id):
     response = requests.put(
         url,
         params={"objtype": "reader", "objkey": reader_id},
-        json={"email": email, "fname": fname, "lname": lname, "libaccountno": libaccountno, "membershipexp":membershipexp})
+        json={"email": email,
+              "fname": fname,
+              "lname": lname,
+              "libaccountno": libaccountno,
+              "membershipexp": membershipexp})
     return (response.json())
 
 
@@ -110,7 +114,7 @@ def create_reader():
               "email": email,
               "fname": fname,
               "libaccountno": libaccountno,
-              "membershipexp":membershipexp})
+              "membershipexp": membershipexp})
     return (response.json())
 
 
@@ -125,7 +129,8 @@ def delete_reader(reader_id):
     url = db['name'] + '/' + db['endpoint'][2]
 
     response = requests.delete(url,
-                               params={"objtype": "reader", "objkey": reader_id})
+                               params={"objtype": "reader",
+                                       "objkey": reader_id})
     return (response.json())
 
 

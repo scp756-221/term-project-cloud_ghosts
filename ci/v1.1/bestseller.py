@@ -87,7 +87,7 @@ class BestSeller():
 
         item = r.json()['Items'][0]
         Rating = (item['Rating'] if 'Rating' in item
-                 else None)
+                  else None)
         return r.status_code, item['Title'], item['Copies'], Rating
 
     def delete_bestseller(self, b_id):

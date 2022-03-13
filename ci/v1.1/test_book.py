@@ -21,32 +21,29 @@ def mserv(request, book_url, auth):
 
 
 @pytest.fixture
-def song(request):
-    # Recorded 1956
-    return ('Elvis Presley', 'Hound Dog')
+def novel(request):
+    return ('George Orwell', '1984')
 
 
-def test_simple_run(mserv, song):
-    # Original recording, 1952
-    orig_artist = 'Big Mama Thornton'
-    trc, m_id = mserv.create(song[0], song[1], orig_artist)
+def test_simple_run(mserv, novel):
+    genre = 'Fiction'
+    trc, m_id = mserv.create(novel[0], novel[1], genre)
     assert trc == 200
-    trc, artist, title, oa = mserv.read(m_id)
-    assert (trc == 200 and artist == song[0] and title == song[1]
-            and oa == orig_artist)
+    trc, author, title, gr = mserv.read(m_id)
+    assert (trc == 200 and author == novel[0] and title == novel[1]
+            and gr == genre)
     mserv.delete(m_id)
     # No status to check
 
 
 @pytest.fixture
-def song_oa(request):
-    # Recorded 1967
-    return ('Aretha Franklin', 'Respect')
+def novel_oa(request):
+    return ('George Orwell', 'Animal Farm')
 
 
 @pytest.fixture
-def m_id_oa(request, mserv, song_oa):
-    trc, m_id = mserv.create(song_oa[0], song_oa[1])
+def m_id_oa(request, mserv, novel_oa):
+    trc, m_id = mserv.create(novel_oa[0], novel_oa[1])
     assert trc == 200
     yield m_id
     # Cleanup called after the test completes
@@ -56,22 +53,15 @@ def m_id_oa(request, mserv, song_oa):
 def test_full_cycle(mserv):
     # `mserv` is an instance of the `Music` class
 
-    # Performance at 2010 Vancouver Winter Olympics
-    song = ('k. d. lang', 'Hallelujah')
-    # Soundtrack of first Shrek film (2001)
-    orig_artist = 'Rufus Wainwright'
+    novel = ('F. Scott Fitzgerald', 'The Great Gatsby')
+    genre = 'Tragedy'
 
-    # Create a music record and save its id in the variable `m_id`
-    # ... Fill in the test ...
-
-    # function by other_dev to create the song with orig_artist
-    trc, m_id = mserv.create(song[0], song[1], orig_artist)
+    trc, m_id = mserv.create(novel[0], novel[1], genre)
     assert trc == 200
 
-    # test read by other dev
-    trc, artist, title, oa = mserv.read(m_id)
-    assert (trc == 200 and artist == song[0] and title == song[1]
-            and oa == orig_artist)
+    trc, author, title, gr = mserv.read(m_id)
+    assert (trc == 200 and author == novel[0] and title == novel[1]
+            and gr == genre)
 
     # The last statement of the test
     mserv.delete(m_id)

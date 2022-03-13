@@ -44,7 +44,7 @@ services:
     ports:
      - "30001:30001"
   test:
-    command: "pytest --user_address cmpt756s1 --user_port 30000 --music_address cmpt756s2 --music_port 30001 --table_suffix ZZ-REG-ID"
+    command: "pytest --reader_address cmpt756s1 --reader_port 30000 --music_address cmpt756s2 --music_port 30001 --table_suffix ZZ-REG-ID"
     depends_on:
       - dynamodb-local
       - cmpt756db

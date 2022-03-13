@@ -43,8 +43,8 @@ class Book():
         Returns
         -------
         (number, string)
-            The number is the HTTP status code returned by Music.
-            The string is the UUID of this song in the music database.
+            The number is the HTTP status code returned by Book.
+            The string is the UUID of this song in the book database.
         """
         payload = {'Author': author,
                    'BookTitle': title}

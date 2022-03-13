@@ -12,28 +12,25 @@ defined in `conftest.py`.
 import pytest
 
 # Local modules
-import book
+import reader
 
 
 @pytest.fixture
-def mserv(request, book_url, auth):
-    return book.Book(book_url, auth)
+def mserv(request, reader_url, auth):
+    return reader.Reader(reader_url, auth)
 
 
 @pytest.fixture
-def song(request):
-    # Recorded 1956
-    return ('Elvis Presley', 'Hound Dog')
+def myreader(request):
+    return ('jiacheng_wu@sfu.ca', 'Jason', 'Wu')
 
 
-def test_simple_run(mserv, song):
-    # Original recording, 1952
-    orig_artist = 'Big Mama Thornton'
-    trc, m_id = mserv.create(song[0], song[1], orig_artist)
+def test_simple_run(mserv, myreader):
+    trc, m_id = mserv.create(myreader[0], myreader[1], myreader[2])
     assert trc == 200
-    trc, artist, title, oa = mserv.read(m_id)
-    assert (trc == 200 and artist == song[0] and title == song[1]
-            and oa == orig_artist)
+    trc, email, fname, lname, libaccountno, membershipexp = mserv.read(m_id)
+    assert (trc == 200 and email == myreader[0] and fname == myreader[1]
+            and lname == myreader[2])
     mserv.delete(m_id)
     # No status to check
 

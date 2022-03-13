@@ -80,8 +80,9 @@ def get_book(book_id):
         headers={'Authorization': headers['Authorization']})
     return (response.json())
 
+
 @bp.route('/reader/<reader_id>', methods=['GET'])
-def get_reader(book_id):
+def get_reader(reader_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -95,6 +96,7 @@ def get_reader(book_id):
         params=payload,
         headers={'Authorization': headers['Authorization']})
     return (response.json())
+
 
 @bp.route('/', methods=['POST'])
 def create_book():
@@ -121,6 +123,7 @@ def create_book():
         headers={'Authorization': headers['Authorization']})
     return (response.json())
 
+
 @bp.route('/reader/', methods=['POST'])
 def create_reader():
     headers = request.headers
@@ -139,12 +142,18 @@ def create_reader():
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][1]
-    payload = {"objtype": "reader", "Email": Email, "Fname": Fname, "Lname": Lname, "LibAccountNo": LibAccountNo, "MembershipExp": MembershipExp}
+    payload = {"objtype": "reader",
+               "Email": Email,
+               "Fname": Fname,
+               "Lname": Lname,
+               "LibAccountNo": LibAccountNo,
+               "MembershipExp": MembershipExp}
     response = requests.post(
         url,
         json=payload,
         headers={'Authorization': headers['Authorization']})
     return (response.json())
+
 
 @bp.route('/<book_id>', methods=['DELETE'])
 def delete_book(book_id):
@@ -161,6 +170,7 @@ def delete_book(book_id):
         headers={'Authorization': headers['Authorization']})
     return (response.json())
 
+
 @bp.route('/reader/<reader_id>', methods=['DELETE'])
 def delete_reader(reader_id):
     headers = request.headers
@@ -175,6 +185,7 @@ def delete_reader(reader_id):
         params={"objtype": "reader", "objkey": reader_id},
         headers={'Authorization': headers['Authorization']})
     return (response.json())
+
 
 # All database calls will have this prefix.  Prometheus metric
 # calls will not---they will have route '/metrics'.  This is
