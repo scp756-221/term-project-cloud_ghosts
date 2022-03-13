@@ -86,5 +86,14 @@ class BasicSimulation extends Simulation {
         .formParam("company", "37")
     )
 
+    .pause(1)
+    .exec(
+      http("request_11") // Here's an example of a POST request
+        .post("/")
+        .formParam("author", "William Shakespeare") // Note the triple double quotes: used in Scala for protecting a whole chain of characters (no need for backslash)
+        .formParam("title", "A Midsummer Night's Dream")
+        .formParam("genre", "Poetry")
+    )
+
   setUp(scn.inject(atOnceUsers(1)).protocols(httpProtocol))
 }
