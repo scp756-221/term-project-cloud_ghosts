@@ -54,6 +54,19 @@ object RUser {
 
 }
 
+object RBook {
+
+  val feeder = csv("book.csv").eager.circular
+
+  val rbook = forever("i") {
+    feed(feeder)
+    .exec(http("RBook ${i}")
+      .get("/api/v1/book/${UUID}"))
+    .pause(1)
+  }
+
+}
+
 /*
   After one S1 read, pause a random time between 1 and 60 s
 */
