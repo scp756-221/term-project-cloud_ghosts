@@ -87,7 +87,7 @@ class BasicSimulation extends Simulation {
     )
     .pause(1)
     .exec(
-      http("request_12") // Here's an example of a POST request
+      http("request_11") // Here's an example of a POST request
         .post("/reader")
         .formParam("email", "abc@gmail.com") // Note the triple double quotes: used in Scala for protecting a whole chain of characters (no need for backslash)
         .formParam("lname", "john")
@@ -97,18 +97,18 @@ class BasicSimulation extends Simulation {
     )
     .pause(1)
     .exec(
-      http("request_13") // Here's an example of a GET request
+      http("request_12") // Here's an example of a GET request
         .get("/reader/12")
     )
     .pause(1)
     .exec(
-      http("request_14") // Here's an example of a DELETE request
+      http("request_13") // Here's an example of a DELETE request
         .delete("/reader/12")
     )
 
     .pause(1)
     .exec(
-      http("request_11") // Here's an example of a POST request
+      http("request_14") // Here's an example of a POST request
         .post("/")
         .formParam("author", "William Shakespeare") // Note the triple double quotes: used in Scala for protecting a whole chain of characters (no need for backslash)
         .formParam("title", "A Midsummer Night's Dream")
@@ -117,13 +117,13 @@ class BasicSimulation extends Simulation {
 
         .pause(1)
     .exec(
-      http("request_12") // Here's an example of a GET request
+      http("request_15") // Here's an example of a GET request
         .get("/12")
     )
 
         .pause(1)
     .exec(
-      http("request_13") // Here's an example of a DELETE request
+      http("request_16") // Here's an example of a DELETE request
         .delete("/13")
     )
 
