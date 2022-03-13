@@ -59,8 +59,13 @@ class Reader():
             payload['membershipexp'] = membershipexp
         if libaccountno is None:
             payload['libaccountno'] = str(uuid.uuid1())
+        else:
+            payload['libaccountno'] = libaccountno
         if membershipexp is None:
-            payload['membershipexp'] = str(date.today() + relativedelta(months=+6))
+            payload['membershipexp'] = str(date.today() +
+                                           relativedelta(months=+6))
+        else:
+            payload['membershipexp'] = membershipexp
         r = requests.post(
             self._url,
             json=payload,
@@ -99,8 +104,8 @@ class Reader():
             return r.status_code, None, None, None
 
         item = r.json()['Items'][0]
-        return r.status_code, item['email'], item['fname'], item['lname'],
-        item['libaccountno'], item['membershipexp']
+        return (r.status_code, item['email'], item['fname'], item['lname'],
+                item['libaccountno'], item['membershipexp'])
 
     def delete(self, reader_id):
         """Delete an author, book pair.

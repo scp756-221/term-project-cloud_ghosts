@@ -160,7 +160,7 @@ def setup(args):
         args.access_key_id,
         args.secret_access_key,
         'Book-' + args.table_suffix,
-        'reader-' + args.table_suffix
+        'Reader-' + args.table_suffix
     )
 
 

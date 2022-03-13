@@ -29,21 +29,30 @@ def test_simple_run(mserv, myreader):
     trc, m_id = mserv.create(myreader[0], myreader[1], myreader[2])
     assert trc == 200
     trc, email, fname, lname, libaccountno, membershipexp = mserv.read(m_id)
+    # trc, email, fname, lname = mserv.read(m_id)
     assert (trc == 200 and email == myreader[0] and fname == myreader[1]
-            and lname == myreader[2])
+            and lname == myreader[2] and isinstance(libaccountno, str)
+            and isinstance(membershipexp, str))
     mserv.delete(m_id)
     # No status to check
 
 
 @pytest.fixture
-def song_oa(request):
-    # Recorded 1967
-    return ('Aretha Franklin', 'Respect')
+def reader_a(request):
+    return ('sleepysalamander@sfu.ca',
+            'Sleepy',
+            'Salamander',
+            'ABCEDEFG14232156',
+            '2022-05-01')
 
 
 @pytest.fixture
-def m_id_oa(request, mserv, song_oa):
-    trc, m_id = mserv.create(song_oa[0], song_oa[1])
+def m_id_oa(request, mserv, reader_a):
+    trc, m_id = mserv.create(reader_a[0],
+                             reader_a[1],
+                             reader_a[2],
+                             reader_a[3],
+                             reader_a[4])
     assert trc == 200
     yield m_id
     # Cleanup called after the test completes
@@ -51,24 +60,26 @@ def m_id_oa(request, mserv, song_oa):
 
 
 def test_full_cycle(mserv):
-    # `mserv` is an instance of the `Music` class
+    # `mserv` is an instance of the `Reader` class
 
-    # Performance at 2010 Vancouver Winter Olympics
-    song = ('k. d. lang', 'Hallelujah')
-    # Soundtrack of first Shrek film (2001)
-    orig_artist = 'Rufus Wainwright'
-
-    # Create a music record and save its id in the variable `m_id`
-    # ... Fill in the test ...
-
-    # function by other_dev to create the song with orig_artist
-    trc, m_id = mserv.create(song[0], song[1], orig_artist)
+    reader_b = ('conflictedcrab@sfu.ca',
+                'Conflicted',
+                'Crab',
+                '999ABCEDEFG14232156',
+                '2022-06-01')
+    trc, m_id = mserv.create(reader_b[0],
+                             reader_b[1],
+                             reader_b[2],
+                             reader_b[3],
+                             reader_b[4])
     assert trc == 200
 
     # test read by other dev
-    trc, artist, title, oa = mserv.read(m_id)
-    assert (trc == 200 and artist == song[0] and title == song[1]
-            and oa == orig_artist)
+    trc, email, fname, lname, libaccountno, membershipexp = mserv.read(m_id)
+    # trc, email, fname, lname = mserv.read(m_id)
+    assert (trc == 200 and email == reader_b[0] and fname == reader_b[1]
+            and lname == reader_b[2] and libaccountno == reader_b[3]
+            and membershipexp == reader_b[4])
 
     # The last statement of the test
     mserv.delete(m_id)
