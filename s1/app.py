@@ -27,7 +27,7 @@ import simplejson as json
 app = Flask(__name__)
 
 metrics = PrometheusMetrics(app)
-metrics.info('app_info', 'User process')
+metrics.info('app_info', 'Reader process')
 
 bp = Blueprint('app', __name__)
 
@@ -62,8 +62,8 @@ def readiness():
     return Response("", status=200, mimetype="application/json")
 
 
-@bp.route('/<user_id>', methods=['PUT'])
-def update_user(user_id):
+@bp.route('/<reader_id>', methods=['PUT'])
+def update_reader(reader_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -74,20 +74,22 @@ def update_user(user_id):
         email = content['email']
         fname = content['fname']
         lname = content['lname']
+        libaccountno = content['libaccountno']
+        membershipexp = content['membershipexp']
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][3]
     response = requests.put(
         url,
-        params={"objtype": "user", "objkey": user_id},
-        json={"email": email, "fname": fname, "lname": lname})
+        params={"objtype": "reader", "objkey": reader_id},
+        json={"email": email, "fname": fname, "lname": lname, "libaccountno": libaccountno, "membershipexp":membershipexp})
     return (response.json())
 
 
 @bp.route('/', methods=['POST'])
-def create_user():
+def create_reader():
     """
-    Create a user.
+    Create a reader.
     If a record already exists with the same fname, lname, and email,
     the old UUID is replaced with a new one.
     """
@@ -96,20 +98,24 @@ def create_user():
         lname = content['lname']
         email = content['email']
         fname = content['fname']
+        libaccountno = content['libaccountno']
+        membershipexp = content['membershipexp']
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][1]
     response = requests.post(
         url,
-        json={"objtype": "user",
+        json={"objtype": "reader",
               "lname": lname,
               "email": email,
-              "fname": fname})
+              "fname": fname,
+              "libaccountno": libaccountno,
+              "membershipexp":membershipexp})
     return (response.json())
 
 
-@bp.route('/<user_id>', methods=['DELETE'])
-def delete_user(user_id):
+@bp.route('/<reader_id>', methods=['DELETE'])
+def delete_reader(reader_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -119,12 +125,12 @@ def delete_user(user_id):
     url = db['name'] + '/' + db['endpoint'][2]
 
     response = requests.delete(url,
-                               params={"objtype": "user", "objkey": user_id})
+                               params={"objtype": "reader", "objkey": reader_id})
     return (response.json())
 
 
-@bp.route('/<user_id>', methods=['GET'])
-def get_user(user_id):
+@bp.route('/<reader_id>', methods=['GET'])
+def get_reader(reader_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -132,7 +138,7 @@ def get_user(user_id):
             json.dumps({"error": "missing auth"}),
             status=401,
             mimetype='application/json')
-    payload = {"objtype": "user", "objkey": user_id}
+    payload = {"objtype": "reader", "objkey": reader_id}
     url = db['name'] + '/' + db['endpoint'][0]
     response = requests.get(url, params=payload)
     return (response.json())
@@ -146,10 +152,10 @@ def login():
     except Exception:
         return json.dumps({"message": "error reading parameters"})
     url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(url, params={"objtype": "user", "objkey": uid})
+    response = requests.get(url, params={"objtype": "reader", "objkey": uid})
     data = response.json()
     if len(data['Items']) > 0:
-        encoded = jwt.encode({'user_id': uid, 'time': time.time()},
+        encoded = jwt.encode({'reader_id': uid, 'time': time.time()},
                              'secret',
                              algorithm='HS256')
     return encoded
@@ -168,7 +174,7 @@ def logoff():
 # All database calls will have this prefix.  Prometheus metric
 # calls will not---they will have route '/metrics'.  This is
 # the conventional organization.
-app.register_blueprint(bp, url_prefix='/api/v1/user/')
+app.register_blueprint(bp, url_prefix='/api/v1/reader/')
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
