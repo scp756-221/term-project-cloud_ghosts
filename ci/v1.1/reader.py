@@ -6,7 +6,6 @@ Python  API for the reader service.
 
 # Installed packages
 import requests
-import random
 import uuid
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -59,9 +58,9 @@ class Reader():
         if membershipexp is not None:
             payload['membershipexp'] = membershipexp
         if libaccountno is None:
-            payload['libaccountno'] = uuid.uuid1()
+            payload['libaccountno'] = str(uuid.uuid1())
         if membershipexp is None:
-            payload['membershipexp'] = date.today() + relativedelta(months=+6)
+            payload['membershipexp'] = str(date.today() + relativedelta(months=+6))
         r = requests.post(
             self._url,
             json=payload,
