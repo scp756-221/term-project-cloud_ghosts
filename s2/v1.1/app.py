@@ -65,7 +65,7 @@ def list_all():
 
 
 @bp.route('/<book_id>', methods=['GET'])
-def get_song(book_id):
+def get_book(book_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
