@@ -148,6 +148,15 @@ class ReadMusicSim extends ReadTablesSim {
   ).protocols(httpProtocol)
 }
 
+class ReadBookSim extends ReadTablesSim {
+  val scnReadBook = scenario("ReadBook")
+    .exec(RBook.rbook)
+
+  setUp(
+    scnReadBook.inject(atOnceUsers(Utility.envVarToInt("USERS", 1)))
+  ).protocols(httpProtocol)
+}
+
 /*
   Read both services concurrently at varying rates.
   Ramp up new users one / 10 s until requested USERS
