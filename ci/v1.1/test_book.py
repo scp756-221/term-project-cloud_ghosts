@@ -38,7 +38,7 @@ def test_simple_run(mserv, novel):
 
 @pytest.fixture
 def novel_oa(request):
-    return ('George Orwell', 'Animal Farm')
+    return ('George Orwell', 'Animal Farm', 'Political Satire')
 
 
 @pytest.fixture
