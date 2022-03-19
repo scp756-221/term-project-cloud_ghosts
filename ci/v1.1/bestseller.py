@@ -18,7 +18,7 @@ class BestSeller():
     ----------
     url: string
         The URL for accessing the bestseller service. Often
-        'http://cmpt756s2:30001/'. Note the trailing slash.
+        'http://cmpt756s2:30003/'. Note the trailing slash.
     auth: string
         Authorization code to pass to the bestseller service. For many
         implementations, the code is required but its content is
@@ -55,7 +55,7 @@ class BestSeller():
             json=payload,
             headers={'Authorization': self._auth}
         )
-        return r.status_code, r.json()['book_id']
+        return r.status_code, r.json()['bestseller_id']
 
     def read_bestseller(self, b_id):
         """Read copies sold, rating of the book.
