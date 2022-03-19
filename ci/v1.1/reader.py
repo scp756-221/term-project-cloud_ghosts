@@ -1,15 +1,18 @@
 """
-Python  API for the book service.
+Python  API for the reader service.
 """
 
 # Standard library modules
 
 # Installed packages
 import requests
+import uuid
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
-class Book():
-    """Python API for the book service.
+class Reader():
+    """Python API for the reader service.
 
     Handles the details of formatting HTTP requests and decoding
     the results.
@@ -17,10 +20,10 @@ class Book():
     Parameters
     ----------
     url: string
-        The URL for accessing the book service. Often
+        The URL for accessing the reader service. Often
         'http://cmpt756s2:30001/'. Note the trailing slash.
     auth: string
-        Authorization code to pass to the book service. For many
+        Authorization code to pass to the reader service. For many
         implementations, the code is required but its content is
         ignored.
     """
@@ -28,7 +31,8 @@ class Book():
         self._url = url
         self._auth = auth
 
-    def create(self, author, title, genre=None):
+    def create(self, email, fname, lname, libaccountno=None,
+               membershipexp=None):
         """Create an author, book pair.
 
         Parameters
@@ -43,21 +47,33 @@ class Book():
         Returns
         -------
         (number, string)
-            The number is the HTTP status code returned by Book.
-            The string is the UUID of this song in the book database.
+            The number is the HTTP status code returned by Music.
+            The string is the UUID of this song in the music database.
         """
-        payload = {'Author': author,
-                   'BookTitle': title}
-        if genre is not None:
-            payload['Genre'] = genre
+        payload = {'email': email,
+                   'fname': fname,
+                   'lname': lname}
+        if libaccountno is not None:
+            payload['libaccountno'] = libaccountno
+        if membershipexp is not None:
+            payload['membershipexp'] = membershipexp
+        if libaccountno is None:
+            payload['libaccountno'] = str(uuid.uuid1())
+        else:
+            payload['libaccountno'] = libaccountno
+        if membershipexp is None:
+            payload['membershipexp'] = str(date.today() +
+                                           relativedelta(months=+6))
+        else:
+            payload['membershipexp'] = membershipexp
         r = requests.post(
             self._url,
             json=payload,
             headers={'Authorization': self._auth}
         )
-        return r.status_code, r.json()['book_id']
+        return r.status_code, r.json()['reader_id']
 
-    def read(self, b_id):
+    def read(self, reader_id):
         """Read an author, book pair.
 
         Parameters
@@ -81,18 +97,17 @@ class Book():
           field, None.
         """
         r = requests.get(
-            self._url + b_id,
+            self._url + reader_id,
             headers={'Authorization': self._auth}
             )
         if r.status_code != 200:
             return r.status_code, None, None, None
 
         item = r.json()['Items'][0]
-        Genre = (item['Genre'] if 'Genre' in item
-                 else None)
-        return r.status_code, item['Author'], item['BookTitle'], Genre
+        return (r.status_code, item['email'], item['fname'], item['lname'],
+                item['libaccountno'], item['membershipexp'])
 
-    def delete(self, b_id):
+    def delete(self, reader_id):
         """Delete an author, book pair.
 
         Parameters
@@ -106,6 +121,6 @@ class Book():
         always returns 200, HTTP success.
         """
         requests.delete(
-            self._url + b_id,
+            self._url + reader_id,
             headers={'Authorization': self._auth}
         )

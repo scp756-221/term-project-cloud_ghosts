@@ -30,14 +30,14 @@ def pytest_addoption(parser):
     are all required for the test suite to run.
     """
     parser.addoption(
-        '--user_address',
-        dest='user_address',
-        help="DNS name or IP address of user service."
+        '--reader_address',
+        dest='reader_address',
+        help="DNS name or IP address of reader service."
         )
     parser.addoption(
-        '--user_port',
+        '--reader_port',
         type=int,
-        help="Port number of user service."
+        help="Port number of reader service."
        )
     parser.addoption(
         '--music_address',
@@ -57,13 +57,13 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture
-def user_address(request):
-    return request.config.getoption('--user_address')
+def reader_address(request):
+    return request.config.getoption('--reader_address')
 
 
 @pytest.fixture
-def user_port(request):
-    return request.config.getoption('--user_port')
+def reader_port(request):
+    return request.config.getoption('--reader_port')
 
 
 @pytest.fixture
@@ -82,9 +82,9 @@ def table_suffix(request):
 
 
 @pytest.fixture
-def user_url(request, user_address, user_port):
-    return "http://{}:{}/api/v1/user/".format(
-        user_address, user_port)
+def reader_url(request, reader_address, reader_port):
+    return "http://{}:{}/api/v1/reader/".format(
+        reader_address, reader_port)
 
 
 @pytest.fixture
@@ -160,7 +160,7 @@ def setup(args):
         args.access_key_id,
         args.secret_access_key,
         'Book-' + args.table_suffix,
-        'User-' + args.table_suffix
+        'Reader-' + args.table_suffix
     )
 
 
