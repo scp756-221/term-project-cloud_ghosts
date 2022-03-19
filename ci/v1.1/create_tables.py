@@ -18,7 +18,8 @@ import boto3
 
 
 # Function definitions
-def create_tables(url, region, access_key_id, secret_access_key, book, reader):
+def create_tables(url, region, access_key_id, secret_access_key, book, reader,
+                  bestseller):
     """ Create the book and reader tables in DynamoDB.
 
     Parameters
@@ -72,9 +73,18 @@ def create_tables(url, region, access_key_id, secret_access_key, book, reader):
         ProvisionedThroughput={
             "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     )
+    bt = dynamodb.create_table(
+        TableName=bestseller,
+        AttributeDefinitions=[{
+            "AttributeName": "bestseller_id", "AttributeType": "S"}],
+        KeySchema=[{"AttributeName": "bestseller_id", "KeyType": "HASH"}],
+        ProvisionedThroughput={
+            "ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
+    )
     """
     The order in which we wait for the tables is irrelevant.  We can only
     proceed after both exist.
     """
     mt.wait_until_exists()
     ut.wait_until_exists()
+    bt.wait_until_exists()

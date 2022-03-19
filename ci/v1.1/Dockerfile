@@ -9,5 +9,4 @@ COPY conftest.py create_tables.py book.py test_book.py ./
 COPY conftest.py create_tables.py reader.py test_reader.py ./
 COPY conftest.py create_tables.py bestseller.py test_bestseller.py ./
 
-
-CMD ["python", "ci_test.py", "s1", "30000", "s2", "30001", "scp756-221"]
+CMD ["python", "ci_test.py", "s1", "30000", "s2", "30001", "s3", "30003", "scp756-221"]

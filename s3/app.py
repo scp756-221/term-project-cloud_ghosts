@@ -7,6 +7,7 @@ Sample application---user service.
 import logging
 import sys
 import time
+from turtle import title
 
 # Installed packages
 from flask import Blueprint
@@ -27,7 +28,7 @@ import simplejson as json
 app = Flask(__name__)
 
 metrics = PrometheusMetrics(app)
-metrics.info('app_info', 'Reader process')
+metrics.info('app_info', 'Bestseller process')
 
 bp = Blueprint('app', __name__)
 
@@ -62,8 +63,8 @@ def readiness():
     return Response("", status=200, mimetype="application/json")
 
 
-@bp.route('/<reader_id>', methods=['PUT'])
-def update_reader(reader_id):
+@bp.route('/<bestseller_id>', methods=['PUT'])
+def update_bestseller(bestseller_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -71,55 +72,49 @@ def update_reader(reader_id):
                         mimetype='application/json')
     try:
         content = request.get_json()
-        email = content['email']
-        fname = content['fname']
-        lname = content['lname']
-        libaccountno = content['libaccountno']
-        membershipexp = content['membershipexp']
+        title = content['title']
+        copies = content['copies']
+        if rating is not None:
+            rating = content['rating']
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][3]
     response = requests.put(
         url,
-        params={"objtype": "reader", "objkey": reader_id},
-        json={"email": email,
-              "fname": fname,
-              "lname": lname,
-              "libaccountno": libaccountno,
-              "membershipexp": membershipexp})
+        params={"objtype": "bestseller", "objkey": bestseller_id},
+        json={"title": title,
+              "copies": copies,
+              "rating": rating})
     return (response.json())
 
 
 @bp.route('/', methods=['POST'])
-def create_reader():
+def create_bestseller():
     """
-    Create a reader.
-    If a record already exists with the same fname, lname, and email,
-    the old UUID is replaced with a new one.
+    Create a bestseller.
+    If a record already exists with the same title, copies and rating,
+    the old b_id is replaced with a new one.
     """
     try:
         content = request.get_json()
-        lname = content['lname']
-        email = content['email']
-        fname = content['fname']
-        libaccountno = content['libaccountno']
-        membershipexp = content['membershipexp']
+        title = content['title']
+        copies = content['copies']
+        if rating is not None:
+            rating = content['rating']
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][1]
     response = requests.post(
         url,
-        json={"objtype": "reader",
-              "lname": lname,
-              "email": email,
-              "fname": fname,
-              "libaccountno": libaccountno,
-              "membershipexp": membershipexp})
+        json={"objtype": "bestseller",
+              "title": title,
+              "copies": copies,
+              "rating": rating})
     return (response.json())
 
 
-@bp.route('/<reader_id>', methods=['DELETE'])
-def delete_reader(reader_id):
+@bp.route('/<bestseller_id>', methods=['DELETE'])
+def delete_bestseller(bestseller_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -129,13 +124,13 @@ def delete_reader(reader_id):
     url = db['name'] + '/' + db['endpoint'][2]
 
     response = requests.delete(url,
-                               params={"objtype": "reader",
-                                       "objkey": reader_id})
+                               params={"objtype": "bestseller",
+                                       "objkey": bestseller_id})
     return (response.json())
 
 
-@bp.route('/<reader_id>', methods=['GET'])
-def get_reader(reader_id):
+@bp.route('/<bestseller_id>', methods=['GET'])
+def get_bestseller(bestseller_id):
     headers = request.headers
     # check header here
     if 'Authorization' not in headers:
@@ -143,7 +138,7 @@ def get_reader(reader_id):
             json.dumps({"error": "missing auth"}),
             status=401,
             mimetype='application/json')
-    payload = {"objtype": "reader", "objkey": reader_id}
+    payload = {"objtype": "bestseller", "objkey": bestseller_id}
     url = db['name'] + '/' + db['endpoint'][0]
     response = requests.get(url, params=payload)
     return (response.json())
@@ -157,10 +152,10 @@ def login():
     except Exception:
         return json.dumps({"message": "error reading parameters"})
     url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(url, params={"objtype": "reader", "objkey": uid})
+    response = requests.get(url, params={"objtype": "bestseller", "objkey": uid})
     data = response.json()
     if len(data['Items']) > 0:
-        encoded = jwt.encode({'reader_id': uid, 'time': time.time()},
+        encoded = jwt.encode({'bestseller_id': uid, 'time': time.time()},
                              'secret',
                              algorithm='HS256')
     return encoded

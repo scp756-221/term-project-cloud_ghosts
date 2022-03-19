@@ -49,6 +49,15 @@ def pytest_addoption(parser):
         help="Port number of music service."
         )
     parser.addoption(
+        '--bestseller_address',
+        help="DNS name or IP address of music service."
+        )
+    parser.addoption(
+        '--bestseller_port',
+        type=int,
+        help="Port number of music service."
+        )
+    parser.addoption(
         '--table_suffix',
         help="Suffix to add to table names (not including leading "
              "'-').  If suffix is 'scp756-2022', the music table "
@@ -77,6 +86,16 @@ def music_port(request):
 
 
 @pytest.fixture
+def bestseller_address(request):
+    return request.config.getoption('--bestseller_address')
+
+
+@pytest.fixture
+def bestseller_port(request):
+    return request.config.getoption('--bestseller_port')
+
+
+@pytest.fixture
 def table_suffix(request):
     return request.config.getoption('--table_suffix')
 
@@ -91,6 +110,12 @@ def reader_url(request, reader_address, reader_port):
 def book_url(request, music_address, music_port):
     return "http://{}:{}/api/v1/book/".format(
         music_address, music_port)
+
+
+@pytest.fixture
+def bestseller_url(request, bestseller_address, bestseller_port):
+    return "http://{}:{}/api/v1/bestseller/".format(
+        bestseller_address, bestseller_port)
 
 
 @pytest.fixture
