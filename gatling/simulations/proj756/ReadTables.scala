@@ -106,7 +106,7 @@ object RReader {
   val rreader = forever("i") {
     feed(feeder)
     .exec(http("RReader ${i}")
-      .get("/api/v1/rreader/${UUID}"))
+      .get("/api/v1/reader/${UUID}"))
     .pause(1, 60)
   }
 }
@@ -121,7 +121,7 @@ object RBoth {
   val u_feeder = csv("users.csv").eager.circular
   val m_feeder = csv("music.csv").eager.random
   val b_feeder = csv("book.csv").eager.random
-  val r_feeder = csv("music.csv").eager.random
+  val r_feeder = csv("reader.csv").eager.random
 
   val rboth = forever("i") {
     feed(u_feeder)
