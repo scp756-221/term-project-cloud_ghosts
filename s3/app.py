@@ -7,7 +7,6 @@ Sample application---user service.
 import logging
 import sys
 import time
-from turtle import title
 
 # Installed packages
 from flask import Blueprint
@@ -74,8 +73,7 @@ def update_bestseller(bestseller_id):
         content = request.get_json()
         title = content['title']
         copies = content['copies']
-        if rating is not None:
-            rating = content['rating']
+        rating = content['rating']
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][3]
@@ -99,8 +97,7 @@ def create_bestseller():
         content = request.get_json()
         title = content['title']
         copies = content['copies']
-        if rating is not None:
-            rating = content['rating']
+        rating = content['rating']
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][1]
@@ -152,12 +149,12 @@ def login():
     except Exception:
         return json.dumps({"message": "error reading parameters"})
     url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(url, params={"objtype": "bestseller", "objkey": uid})
+    response = requests.get(url, params={"objtype": "bestseller",
+                            "objkey": uid})
     data = response.json()
     if len(data['Items']) > 0:
         encoded = jwt.encode({'bestseller_id': uid, 'time': time.time()},
-                             'secret',
-                             algorithm='HS256')
+                             'secret', algorithm='HS256')
     return encoded
 
 
