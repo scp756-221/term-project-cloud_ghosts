@@ -1,6 +1,6 @@
-author,title,genre
-Barbara Cartland,Romance,Romance
-William Shakespeare,A Midsummer Night's Dream,Poetry
-Georges Simenon,Maigret,Detective
-Sidney Sheldon,Suspense,Mystery
-Paulo Coelho,The Alchemist,Inspirational
+author,title,genre,UUID
+Barbara Cartland,Romance,Romance,6ecfafd0-8a35-4af6-a9e2-cbd79b3abeea
+William Shakespeare,A Midsummer Night's Dream,Poetry,6ecfafd0-8a35-4af6-a9e2-cbd79b3abeeb
+Georges Simenon,Maigret,Detective,c2573193-f333-49e2-abec-182915747756
+Sidney Sheldon,Suspense,Mystery,d2573193-f333-49e2-abec-182915747756
+Paulo Coelho,The Alchemist,Inspirational,22e47f97-11ca-4c3c-8e77-f3068fddaf6e

@@ -1,4 +1,4 @@
-email,fname,lname,libaccountno,membershipexp
-abc@gmail.com,john,doe,jd123456,2022-12-12
-qwe@gmail.com,jane,doe,jd567890,2022-11-12
-asd@gmail.com,asdf,ghi,ag456788,2023-01-01
+email,fname,lname,libaccountno,membershipexp,UUID
+abc@gmail.com,john,doe,jd123456,2022-12-12,6ecfafd0-8a35-4af6-a9e2-cbd79b3abeea
+qwe@gmail.com,jane,doe,jd567890,2022-11-12,c2573193-f333-49e2-abec-182915747756
+asd@gmail.com,asdf,ghi,ag456788,2023-01-01,22e47f97-11ca-4c3c-8e77-f3068fddaf6e
