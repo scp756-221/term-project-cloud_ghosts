@@ -89,7 +89,7 @@ class BasicSimulation extends Simulation {
     .exec(
       http("request_11") // Here's an example of a POST request
         .post("/reader")
-        .formParam("email", "abc@gmail.com") // Note the triple double quotes: used in Scala for protecting a whole chain of characters (no need for backslash)
+        .formParam("email", "johndoe@gmail.com") 
         .formParam("lname", "john")
         .formParam("fname", "doe")
         .formParam("libaccountno", "jd123456")
