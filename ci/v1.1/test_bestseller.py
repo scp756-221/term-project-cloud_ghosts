@@ -29,10 +29,11 @@ def test_best_run(mserv, bestselling):
     trc, b_id = mserv.create_bestseller(bestselling[0], bestselling[1],
                                         bestselling[2])
     assert trc == 200
+    assert isinstance(b_id, str)
     trc, title, copies, rating = mserv.read_bestseller(b_id)
     assert (trc == 200 and title == bestselling[0] and copies == bestselling[1]
             and rating == bestselling[2])
-    mserv.delete(b_id)
+    mserv.delete_bestseller(b_id)
     # No status to check
 
 
@@ -48,4 +49,4 @@ def m_id_oa(request, mserv, bestseller_a):
     assert trc == 200
     yield b_id
     # Cleanup called after the test completes
-    mserv.delete(b_id)
+    mserv.delete_bestseller(b_id)

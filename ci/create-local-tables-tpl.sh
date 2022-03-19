@@ -23,7 +23,7 @@ aws dynamodb create-table \
 aws dynamodb create-table \
   --endpoint-url http://0.0.0.0:8000 \
   --region us-west-2 \
-  --table-name BestSeller-ZZ-REG-ID \
+  --table-name Bestseller-ZZ-REG-ID \
   --attribute-definitions '[{ "AttributeName": "bestseller_id", "AttributeType": "S" }]' \
   --key-schema '[{ "AttributeName": "bestseller_id", "KeyType": "HASH" }]' \
   --provisioned-throughput '{"ReadCapacityUnits": 5, "WriteCapacityUnits": 5}'

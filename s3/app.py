@@ -95,18 +95,20 @@ def create_bestseller():
     """
     try:
         content = request.get_json()
-        title = content['title']
-        copies = content['copies']
-        rating = content['rating']
+        title = content['Title']
+        copies = content['Copies']
+        rating = content['Rating'] if 'Rating' in content else None
     except Exception:
         return json.dumps({"message": "error reading arguments"})
     url = db['name'] + '/' + db['endpoint'][1]
+    payload = {"objtype": "bestseller",
+               "Title": title,
+               "Copies": copies}
+    if rating is not None:
+        payload["Rating"] = rating
     response = requests.post(
         url,
-        json={"objtype": "bestseller",
-              "title": title,
-              "copies": copies,
-              "rating": rating})
+        json=payload)
     return (response.json())
 
 

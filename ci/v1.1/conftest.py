@@ -186,7 +186,7 @@ def setup(args):
         args.secret_access_key,
         'Book-' + args.table_suffix,
         'Reader-' + args.table_suffix,
-        'BestSeller-' + args.table_suffix
+        'Bestseller-' + args.table_suffix
     )
 
 
