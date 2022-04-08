@@ -1,6 +1,72 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
+      "tableBook": {
+        "Type": "AWS::DynamoDB::Table",
+        "Properties": {
+          "TableName": "Book-ZZ-REG-ID",
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "book_id",
+              "AttributeType": "S"
+            }
+          ],
+          "KeySchema": [
+            {
+              "AttributeName": "book_id",
+              "KeyType": "HASH"
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": "5",
+            "WriteCapacityUnits": "5"
+          }
+        }
+      },
+      "tableReader": {
+        "Type": "AWS::DynamoDB::Table",
+        "Properties": {
+          "TableName": "Reader-ZZ-REG-ID",
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "reader_id",
+              "AttributeType": "S"
+            }
+          ],
+          "KeySchema": [
+            {
+              "AttributeName": "reader_id",
+              "KeyType": "HASH"
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": "5",
+            "WriteCapacityUnits": "5"
+          }
+        }
+      },
+      "tableBestseller": {
+        "Type": "AWS::DynamoDB::Table",
+        "Properties": {
+          "TableName": "Bestseller-ZZ-REG-ID",
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "bestseller_id",
+              "AttributeType": "S"
+            }
+          ],
+          "KeySchema": [
+            {
+              "AttributeName": "bestseller_id",
+              "KeyType": "HASH"
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": "5",
+            "WriteCapacityUnits": "5"
+          }
+        }
+      },
       "tableMusic": {
         "Type": "AWS::DynamoDB::Table",
         "Properties": {
