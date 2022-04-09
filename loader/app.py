@@ -31,10 +31,9 @@ def build_auth():
     global loader_token
     return requests.auth.HTTPBasicAuth('svc-loader', loader_token)
 
-
-def create_user(lname, fname, email, uuid):
+def create_book(author, genre, title, uuid):
     """
-    Create a user.
+    Create a book.
     If a record already exists with the same fname, lname, and email,
     the old UUID is replaced with this one.
     """
@@ -42,17 +41,36 @@ def create_user(lname, fname, email, uuid):
     response = requests.post(
         url,
         auth=build_auth(),
-        json={"objtype": "user",
+        json={"objtype": "book",
+              "Author": author,
+              "BookTitle": title,
+              "Genre": genre,
+              "uuid": uuid})
+    return (response.json())
+
+def create_reader(email, fname, lname, libaccountno, membershipexp, uuid):
+    """
+    Create a reader.
+    If a record already exists with the same fname, lname, and email,
+    the old UUID is replaced with this one.
+    """
+    url = db['name'] + '/load'
+    response = requests.post(
+        url,
+        auth=build_auth(),
+        json={"objtype": "reader",
               "lname": lname,
               "email": email,
               "fname": fname,
+              "libaccountno": libaccountno,
+              "membershipexp": membershipexp,
               "uuid": uuid})
     return (response.json())
 
 
-def create_song(artist, title, uuid):
+def create_bestseller(title, copies, rating, uuid):
     """
-    Create a song.
+    Create a best seller.
     If a record already exists with the same artist and title,
     the old UUID is replaced with this one.
     """
@@ -60,9 +78,10 @@ def create_song(artist, title, uuid):
     response = requests.post(
         url,
         auth=build_auth(),
-        json={"objtype": "music",
-              "Artist": artist,
-              "SongTitle": title,
+        json={"objtype": "bestseller",
+              "Title": title,
+              "Copies": copies,
+              "Rating": rating,
               "uuid": uuid})
     return (response.json())
 
@@ -80,30 +99,49 @@ if __name__ == '__main__':
 
     resource_dir = '/data'
 
-    with open('{}/users/users.csv'.format(resource_dir), 'r') as inp:
+    with open('{}/book/book.csv'.format(resource_dir), 'r') as inp:
         rdr = csv.reader(inp)
         next(rdr)  # Skip header
         for fn, ln, email, uuid in rdr:
-            resp = create_user(fn.strip(),
+            resp = create_book(fn.strip(),
                                ln.strip(),
                                email.strip(),
                                uuid.strip())
-            resp = check_resp(resp, 'user_id')
+            resp = check_resp(resp, 'book_id')
             if resp is None or resp != uuid:
-                print('Error creating user {} {} ({}), {}'.format(fn,
+                print('Error creating book {} {} ({}), {}'.format(fn,
                                                                   ln,
                                                                   email,
                                                                   uuid))
 
-    with open('{}/music/music.csv'.format(resource_dir), 'r') as inp:
+    with open('{}/reader/reader.csv'.format(resource_dir), 'r') as inp:
         rdr = csv.reader(inp)
         next(rdr)  # Skip header
-        for artist, title, uuid in rdr:
-            resp = create_song(artist.strip(),
-                               title.strip(),
+        for email, fname, lname, libaccountno, membershipexp, uuid in rdr:
+            resp = create_reader(email.strip(),
+                               fname.strip(),
+                               lname.strip(),
+                               libaccountno.strip(),
+                               membershipexp.strip(),
                                uuid.strip())
-            resp = check_resp(resp, 'music_id')
+            resp = check_resp(resp, 'reader_id')
             if resp is None or resp != uuid:
-                print('Error creating song {} {}, {}'.format(artist,
-                                                             title,
-                                                             uuid))
+                print('Error creating reader {} {} ({}), {}'.format(email,
+                                                                    fname,
+                                                                    lname,
+                                                                    uuid))
+                                                                  
+    with open('{}/bestseller/bestseller.csv'.format(resource_dir), 'r') as inp:
+        rdr = csv.reader(inp)
+        next(rdr)  # Skip header
+        for title, copies, rating, uuid in rdr:
+            resp = create_bestseller(title.strip(),
+                               copies.strip(),
+                               rating.strip(),
+                               uuid.strip())
+            resp = check_resp(resp, 'bestseller_id')
+            if resp is None or resp != uuid:
+                print('Error creating best seller {} {}, {} {}'.format(title,
+                                                                       copies,
+                                                                       title,
+                                                                       uuid))

@@ -90,7 +90,7 @@ rollout-s2: $(LOG_DIR)/s2-$(S2_VER).repo.log  cluster/s2-dpl-$(S2_VER).yaml
 
 rollout-s3: $(LOG_DIR)/s3.repo.log  cluster/s3-dpl.yaml
 	$(KC) -n $(APP_NS) apply -f cluster/s3-dpl.yaml | tee $(LOG_DIR)/rollout-s3.log
-	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s3 | tee -a $(LOG_DIR)/rollout-s3.log
+	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s3-v1 | tee -a $(LOG_DIR)/rollout-s3.log
 
 # --- rollout-db: Rollout a new deployment of DB
 rollout-db: db
@@ -139,7 +139,7 @@ log-s1:
 	$(KC) -n $(APP_NS) logs deployment/cmpt756s1 --container cmpt756s1
 
 log-s2:
-	$(KC) -n $(APP_NS) logs deployment/cmpt756s2 --container cmpt756s2
+	$(KC) -n $(APP_NS) logs deployment/cmpt756s2-v1 --container cmpt756s2
 
 log-s3:
 	$(KC) -n $(APP_NS) logs deployment/cmpt756s3 --container cmpt756s3

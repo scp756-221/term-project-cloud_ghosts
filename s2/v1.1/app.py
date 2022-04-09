@@ -34,7 +34,8 @@ db = {
         "read",
         "write",
         "delete",
-        "update"
+        "update",
+        "list"
     ]
 }
 bp = Blueprint('app', __name__)
@@ -61,7 +62,12 @@ def list_all():
                         status=401,
                         mimetype='application/json')
     # list all songs here
-    return {}
+    url = db['name'] + '/' + db['endpoint'][4]
+    response = requests.get(
+        url,
+        params={"objtype": "book"},
+        headers={'Authorization': headers['Authorization']})
+    return (response.json())
 
 
 @bp.route('/<book_id>', methods=['GET'])

@@ -42,12 +42,12 @@ db = {
 }
 
 
-@bp.route('/', methods=['GET'])
-@metrics.do_not_track()
-def hello_world():
-    return ("If you are reading this in a browser, your service is "
-            "operational. Switch to curl/Postman/etc to interact using the "
-            "other HTTP verbs.")
+# @bp.route('/', methods=['GET'])
+# @metrics.do_not_track()
+# def hello_world():
+#     return ("If you are reading this in a browser, your service is "
+#             "operational. Switch to curl/Postman/etc to interact using the "
+#             "other HTTP verbs.")
 
 
 @bp.route('/health')
@@ -139,9 +139,24 @@ def get_bestseller(bestseller_id):
             mimetype='application/json')
     payload = {"objtype": "bestseller", "objkey": bestseller_id}
     url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(url, params=payload)
+    response = requests.get(url, params=payload,
+                            headers={'Authorization': headers['Authorization']})
     return (response.json())
 
+@bp.route('/', methods=['GET'])
+def list_all():
+    headers = request.headers
+    # check header here
+    if 'Authorization' not in headers:
+        return Response(json.dumps({"error": "missing auth"}),
+                        status=401,
+                        mimetype='application/json')
+    url = db['name'] + '/list'
+    response = requests.get(
+        url,
+        params={"objtype": "bestseller"},
+        headers={'Authorization': headers['Authorization']})
+    return (response.json())
 
 @bp.route('/login', methods=['PUT'])
 def login():
