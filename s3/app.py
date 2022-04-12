@@ -139,9 +139,10 @@ def get_bestseller(bestseller_id):
             mimetype='application/json')
     payload = {"objtype": "bestseller", "objkey": bestseller_id}
     url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(url, params=payload,
-                            headers={'Authorization':
-                            headers['Authorization']})
+    response = requests.get(
+        url,
+        params=payload,
+        headers={'Authorization': headers['Authorization']})
     return (response.json())
 
 
