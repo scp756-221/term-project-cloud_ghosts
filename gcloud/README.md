@@ -18,7 +18,7 @@ template files by executing the following in the tools container:
 /home/k8s# make -f k8s-tpl.mak templates
 ~~~
 
-You probably have already done this in Assignment&nbsp;1 (though it can't hurt to do it again to be sure).
+You probably have already done this in Assignment&nbsp;1 (though it can't hurt to do it again).
 
 ## Building the image
 
