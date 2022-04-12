@@ -43,11 +43,19 @@ db = {
 
 
 @bp.route('/', methods=['GET'])
-@metrics.do_not_track()
-def hello_world():
-    return ("If you are reading this in a browser, your service is "
-            "operational. Switch to curl/Postman/etc to interact using the "
-            "other HTTP verbs.")
+def list_all():
+    headers = request.headers
+    # check header here
+    if 'Authorization' not in headers:
+        return Response(json.dumps({"error": "missing auth"}),
+                        status=401,
+                        mimetype='application/json')
+    url = db['name'] + '/list'
+    response = requests.get(
+        url,
+        params={"objtype": "reader"},
+        headers={'Authorization': headers['Authorization']})
+    return (response.json()) 
 
 
 @bp.route('/health')
