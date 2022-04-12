@@ -41,35 +41,10 @@ object RMusic {
 
 }
 
-object RUser {
-
-  val feeder = csv("users.csv").eager.circular
-
-  val ruser = forever("i") {
-    feed(feeder)
-    .exec(http("RUser ${i}")
-      .get("/api/v1/user/${UUID}"))
-    .pause(1)
-  }
-
-}
-
-object RBook {
-
-  val feeder = csv("book.csv").eager.circular
-
-  val rbook = forever("i") {
-    feed(feeder)
-    .exec(http("RBook ${i}")
-      .get("/api/v1/book/${UUID}"))
-    .pause(1)
-  }
-
-}
-
 /*
   After one S1 read, pause a random time between 1 and 60 s
 */
+
 object RUserVarying {
   val feeder = csv("users.csv").eager.circular
 
@@ -97,7 +72,7 @@ object RMusicVarying {
 }
 
 /*
-  After one S2 read, pause a random time between 1 and 60 s
+  After one S1 read, pause a random time between 1 and 60 s
 */
 
 object RReader {
@@ -112,6 +87,40 @@ object RReader {
 }
 
 /*
+  After one S2 read, pause a random time between 1 and 60 s
+*/
+
+object RBook {
+
+  val feeder = csv("book.csv").eager.circular
+
+  val rbook = forever("i") {
+    feed(feeder)
+    .exec(http("RBook ${i}")
+      .get("/api/v1/book/${UUID}"))
+    .pause(1)
+  }
+
+}
+
+/*
+  After one S3 read, pause a random time between 1 and 60 s
+*/
+
+object RBestseller {
+
+  val feeder = csv("bestseller.csv").eager.circular
+
+  val rbestseller = forever("i") {
+    feed(feeder)
+    .exec(http("RBestseller ${i}")
+      .get("/api/v1/bestseller/${UUID}"))
+    .pause(1)
+  }
+
+}
+
+/*
   Failed attempt to interleave reads from User and Music tables.
   The Gatling EDSL only honours the second (Music) read,
   ignoring the first read of User. [Shrug-emoji] 
@@ -122,8 +131,10 @@ object RBoth {
   val m_feeder = csv("music.csv").eager.random
   val b_feeder = csv("book.csv").eager.random
   val r_feeder = csv("reader.csv").eager.random
+  val bs_feeder = csv("bestseller.csv").eager.random
 
   val rboth = forever("i") {
+
     feed(u_feeder)
     .exec(http("RUser ${i}")
       .get("/api/v1/user/${UUID}"))
@@ -132,13 +143,24 @@ object RBoth {
     feed(m_feeder)
     .exec(http("RMusic ${i}")
       .get("/api/v1/music/${UUID}"))
-      .pause(1)
+      .pause(1);
 
     feed(r_feeder)
     .exec(http("RReader ${i}")
       .get("/api/v1/reader/${UUID}"))
+      .pause(1);
+
+    feed(b_feeder)
+    .exec(http("RBook ${i}")
+      .get("/api/v1/book/${UUID}"))
+    .pause(1);
+
+    feed(bs_feeder)
+    .exec(http("RBestseller ${i}")
+      .get("/api/v1/bestseller/${UUID}"))
       .pause(1)
-  }
+
+ }
 
 }
 
@@ -169,6 +191,15 @@ class ReadMusicSim extends ReadTablesSim {
   ).protocols(httpProtocol)
 }
 
+class ReadReaderSim extends ReadTablesSim {
+  val scnReadReader = scenario("ReadReader")
+      .exec(RReader.rreader)
+
+  setUp(
+    scnReadReader.inject(atOnceUsers(Utility.envVarToInt("USERS", 1)))
+  ).protocols(httpProtocol)
+}
+
 class ReadBookSim extends ReadTablesSim {
   val scnReadBook = scenario("ReadBook")
     .exec(RBook.rbook)
@@ -178,14 +209,15 @@ class ReadBookSim extends ReadTablesSim {
   ).protocols(httpProtocol)
 }
 
-class ReadReaderSim extends ReadTablesSim {
-  val scnReadUser = scenario("ReadReader")
-      .exec(RReader.rreader)
+class ReadBestsellerSim extends ReadTablesSim {
+  val scnReadBestseller = scenario("ReadBestseller")
+    .exec(RBestseller.rbestseller)
 
   setUp(
-    scnReadUser.inject(atOnceUsers(Utility.envVarToInt("USERS", 1)))
+    scnReadBestseller.inject(atOnceUsers(Utility.envVarToInt("USERS", 1)))
   ).protocols(httpProtocol)
 }
+
 
 /*
   Read both services concurrently at varying rates.
