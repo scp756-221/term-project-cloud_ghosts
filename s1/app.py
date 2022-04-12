@@ -55,7 +55,7 @@ def list_all():
         url,
         params={"objtype": "reader"},
         headers={'Authorization': headers['Authorization']})
-    return (response.json()) 
+    return (response.json())
 
 
 @bp.route('/health')

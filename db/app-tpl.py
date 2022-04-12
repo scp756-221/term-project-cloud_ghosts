@@ -104,15 +104,17 @@ def read():
                            KeyConditionExpression=Key(table_id).eq(objkey))
     return response
 
+
 @bp.route('/list', methods=['GET'])
 def list_all():
     headers = request.headers  # noqa: F841
     # check header here
     objtype = urllib.parse.unquote_plus(request.args.get('objtype'))
     table_name = objtype.capitalize()+"-ZZ-REG-ID"
-    table_id = objtype + "_id"
     table = dynamodb.Table(table_name)
     response = table.scan()
+    return response
+
 
 @bp.route('/write', methods=['POST'])
 def write():
