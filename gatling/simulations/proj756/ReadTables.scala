@@ -45,6 +45,7 @@ object RMusic {
   After one S1 read, pause a random time between 1 and 60 s
 */
 
+/*
 object RUserVarying {
   val feeder = csv("users.csv").eager.circular
 
@@ -55,6 +56,7 @@ object RUserVarying {
     .pause(1, 60)
   }
 }
+*/
 
 /*
   After one S2 read, pause a random time between 1 and 60 s
@@ -135,11 +137,12 @@ object RBoth {
 
   val rboth = forever("i") {
 
+    /*
     feed(u_feeder)
     .exec(http("RUser ${i}")
       .get("/api/v1/user/${UUID}"))
     .pause(1);
-
+    */
     feed(m_feeder)
     .exec(http("RMusic ${i}")
       .get("/api/v1/music/${UUID}"))
@@ -172,7 +175,7 @@ class ReadTablesSim extends Simulation {
     .authorizationHeader("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiZGJmYmMxYzAtMDc4My00ZWQ3LTlkNzgtMDhhYTRhMGNkYTAyIiwidGltZSI6MTYwNzM2NTU0NC42NzIwNTIxfQ.zL4i58j62q8mGUo5a0SQ7MHfukBUel8yl8jGT5XmBPo")
     .acceptLanguageHeader("en-US,en;q=0.5")
 }
-
+/*
 class ReadUserSim extends ReadTablesSim {
   val scnReadUser = scenario("ReadUser")
       .exec(RUser.ruser)
@@ -181,7 +184,7 @@ class ReadUserSim extends ReadTablesSim {
     scnReadUser.inject(atOnceUsers(Utility.envVarToInt("USERS", 1)))
   ).protocols(httpProtocol)
 }
-
+*/
 class ReadMusicSim extends ReadTablesSim {
   val scnReadMusic = scenario("ReadMusic")
     .exec(RMusic.rmusic)
@@ -224,6 +227,8 @@ class ReadBestsellerSim extends ReadTablesSim {
   Ramp up new users one / 10 s until requested USERS
   is reached for each service.
 */
+
+/*
 class ReadBothVaryingSim extends ReadTablesSim {
   val scnReadMV = scenario("ReadMusicVarying")
     .exec(RMusicVarying.rmusic)
@@ -239,6 +244,7 @@ class ReadBothVaryingSim extends ReadTablesSim {
     scnReadUV.inject(rampConcurrentUsers(1).to(users).during(10*users))
   ).protocols(httpProtocol)
 }
+*/
 
 /*
   This doesn't work---it just reads the Music table.
